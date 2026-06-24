@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Texto</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Arial, sans-serif;
+      background: #eef1f3;
+      color: #9ca3aa;
+    }
+
+    main {
+      width: min(88%, 620px);
+      padding: 18px;
+      background: #f7f8f9;
+      border: 1px solid #eceff1;
+      border-radius: 10px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #aab0b6;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      padding: 10px;
+      resize: vertical;
+      border: 1px solid #e7eaec;
+      border-radius: 7px;
+      outline: none;
+
+      font: 12px/1.45 Arial, sans-serif;
+      color: #b5bbc0;
+      background: #f1f3f4;
+    }
+
+    button {
+      display: block;
+      width: 105px;
+      margin: 10px auto 0;
+      padding: 6px 10px;
+
+      border: 1px solid #e1e4e6;
+      border-radius: 6px;
+      background: #eceff1;
+      color: #9fa6ac;
+
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #e7eaec;
+      color: #858d94;
+    }
+
+    #estado {
+      min-height: 14px;
+      margin: 6px 0 0;
+      text-align: center;
+      font-size: 10px;
+      color: #aeb4b9;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Texto</h1>
+
+    <textarea id="texto" readonly>
+      Controlador
+  private def guardar(): Unit = {
+    if (!modelo.guardarDatos())
+      vista.mostrarMensaje("Error al guardar archivo.")
+  }
+
+class AgendaModelo(
+  val carpetaDatos: String = "datos",
+  val nombreArchivo: String = "agenda.dat"
+) {
+
+  private val rutaArchivo = Paths.get(carpetaDatos, nombreArchivo)
+
+  crearCarpeta()
+  cargarDatos()
+
+  private def crearCarpeta(): Unit = {
+    val carpeta = Paths.get(carpetaDatos)
+    if (!Files.exists(carpeta)) Files.createDirectories(carpeta)
+  }
+
+  def guardarDatos(): Boolean = {
+    try {
+      crearCarpeta()
+      val oos = new ObjectOutputStream(
+        new BufferedOutputStream(
+          new FileOutputStream(rutaArchivo.toFile)
+        )
+      )
+      try oos.writeObject(contactos)
+      finally oos.close()
+      true
+    } catch {
+      case _: Throwable => false
+    }
+  }
+
+  private def cargarDatos(): Unit = {
+    if (!Files.exists(rutaArchivo)) return
+    try {
+      val ois = new ObjectInputStream(
+        new BufferedInputStream(
+          new FileInputStream(rutaArchivo.toFile)
+        )
+      )
+      val obj = try ois.readObject() finally ois.close()
+      obj match {
+        case v: Vector[_] =>
+          var i = 0
+          var ok = true
+          while (i < v.length && ok) {
+            if (!v(i).isInstanceOf[Contacto]) ok = false
+            i += 1
+          }
+          if (ok) contactos = v.asInstanceOf[Vector[Contacto]]
+        case _ => ()
+      }
+    } catch {
+      case _: Throwable => ()
+    }
+  }
+  }
+    </textarea>
+
+    <button type="button" onclick="copiarTexto()">Copiar</button>
+    <p id="estado"></p>
+  </main>
+
+  <script>
+    async function copiarTexto() {
+      const campo = document.getElementById("texto");
+      const estado = document.getElementById("estado");
+
+      try {
+        await navigator.clipboard.writeText(campo.value);
+        estado.textContent = "Copiado";
+      } catch (error) {
+        campo.removeAttribute("readonly");
+        campo.select();
+        document.execCommand("copy");
+        campo.setAttribute("readonly", "");
+        estado.textContent = "Copiado";
+      }
+    }
+  </script>
+</body>
+</html>
