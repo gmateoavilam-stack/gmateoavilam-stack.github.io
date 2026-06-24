@@ -50,10 +50,15 @@
       background: #f1f3f4;
     }
 
+    .botones {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
     button {
-      display: block;
       width: 105px;
-      margin: 10px auto 0;
       padding: 6px 10px;
 
       border: 1px solid #e1e4e6;
@@ -84,72 +89,13 @@
   <main>
     <h1>Texto</h1>
 
-    <textarea id="texto" readonly>
-      Controlador
-  private def guardar(): Unit = {
-    if (!modelo.guardarDatos())
-      vista.mostrarMensaje("Error al guardar archivo.")
-  }
+    <textarea id="texto" readonly>REEMPLAZA ESTE TEXTO POR LA INFORMACIÓN QUE QUIERES COPIAR.</textarea>
 
-class AgendaModelo(
-  val carpetaDatos: String = "datos",
-  val nombreArchivo: String = "agenda.dat"
-) {
+    <div class="botones">
+      <button type="button" onclick="copiarTexto()">Copiar</button>
+      <button type="button" onclick="descargarTexto()">Descargar TXT</button>
+    </div>
 
-  private val rutaArchivo = Paths.get(carpetaDatos, nombreArchivo)
-
-  crearCarpeta()
-  cargarDatos()
-
-  private def crearCarpeta(): Unit = {
-    val carpeta = Paths.get(carpetaDatos)
-    if (!Files.exists(carpeta)) Files.createDirectories(carpeta)
-  }
-
-  def guardarDatos(): Boolean = {
-    try {
-      crearCarpeta()
-      val oos = new ObjectOutputStream(
-        new BufferedOutputStream(
-          new FileOutputStream(rutaArchivo.toFile)
-        )
-      )
-      try oos.writeObject(contactos)
-      finally oos.close()
-      true
-    } catch {
-      case _: Throwable => false
-    }
-  }
-
-  private def cargarDatos(): Unit = {
-    if (!Files.exists(rutaArchivo)) return
-    try {
-      val ois = new ObjectInputStream(
-        new BufferedInputStream(
-          new FileInputStream(rutaArchivo.toFile)
-        )
-      )
-      val obj = try ois.readObject() finally ois.close()
-      obj match {
-        case v: Vector[_] =>
-          var i = 0
-          var ok = true
-          while (i < v.length && ok) {
-            if (!v(i).isInstanceOf[Contacto]) ok = false
-            i += 1
-          }
-          if (ok) contactos = v.asInstanceOf[Vector[Contacto]]
-        case _ => ()
-      }
-    } catch {
-      case _: Throwable => ()
-    }
-  }
-  }
-    </textarea>
-
-    <button type="button" onclick="copiarTexto()">Copiar</button>
     <p id="estado"></p>
   </main>
 
@@ -168,6 +114,21 @@ class AgendaModelo(
         campo.setAttribute("readonly", "");
         estado.textContent = "Copiado";
       }
+    }
+
+    function descargarTexto() {
+      const texto = document.getElementById("texto").value;
+      const archivo = new Blob([texto], {
+        type: "text/plain;charset=utf-8"
+      });
+
+      const enlace = document.createElement("a");
+      enlace.href = URL.createObjectURL(archivo);
+      enlace.download = "texto.txt";
+      enlace.click();
+
+      URL.revokeObjectURL(enlace.href);
+      document.getElementById("estado").textContent = "Archivo descargado";
     }
   </script>
 </body>
