@@ -90,6 +90,9 @@
     <h1>Texto</h1>
 
     <textarea id="texto" readonly>
+      @SerialVersionUID(1L)
+case class Contacto() extends Serializable
+      
         private def guardar(): Unit = {
     if (!modelo.guardarDatos())
       vista.mostrarMensaje("Error al guardar archivo.")
