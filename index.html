@@ -130,30 +130,31 @@ case class Contacto() extends Serializable
     }
   }
 
-  private def cargarDatos(): Unit = {
-    if (!Files.exists(rutaArchivo)) return
-    try {
-      val ois = new ObjectInputStream(
-        new BufferedInputStream(
-          new FileInputStream(rutaArchivo.toFile)
-        )
+private def cargarDatos(): Unit = {
+  if (!Files.exists(rutaArchivo)) return
+
+  try {
+    val ois = new ObjectInputStream(
+      new BufferedInputStream(
+        new FileInputStream(rutaArchivo.toFile)
       )
-      val obj = try ois.readObject() finally ois.close()
-      obj match {
-        case v: Vector[_] =>
-          var i = 0
-          var ok = true
-          while (i < v.length && ok) {
-            if (!v(i).isInstanceOf[Contacto]) ok = false
-            i += 1
-          }
-          if (ok) contactos = v.asInstanceOf[Vector[Contacto]]
-        case _ => ()
-      }
-    } catch {
-      case _: Throwable => ()
+    )
+
+    val obj = try ois.readObject() finally ois.close()
+
+    obj match {
+      case v: Vector[_] =>
+        if (v.forall(_.isInstanceOf[Contacto])) {
+          contactos = v.asInstanceOf[Vector[Contacto]]
+        }
+
+      case _ => ()
     }
+
+  } catch {
+    case _: Exception => ()
   }
+}
       .</textarea>
 
     <div class="botones">
