@@ -90,54 +90,94 @@
     <h1>Texto</h1>
 
     <textarea id="texto" readonly>
-     1. Qué son los traits?, indique con un ejemplo
-Son estructuras que permiten compartir atributos y métodos entre varias clases. Son similares a las interfaces, pero pueden contener métodos implementados.
 
-trait Volador {
-	def volar(): Unit = println("Estoy volando")
-}
-class Pajaro extends Volador
+		progenitor(X, Y) :-
+    padre(X, Y).
 
-2. Características de la Programación OO en SCALA
-- Utiliza clases y objetos
-- Permite encapsulamiento mediante private y protected
-- Admite herencia con extends
-- Permite polimorfismo
-- Utiliza trait para compartir comportamientos
-- Todo valor en Scala es considerado un objeto
+progenitor(X, Y) :-
+    madre(X, Y).
 
-3. Indique las características de la programación funcional en SCALA
-- las funciones pueden almacenarse en variables
-- Permite pasar funciones como parámetros
-- Favorece el uso de datos inmutables como val
-- Utiliza funciones como map, filter, fold y reduce
-- Evita modificar estados y producir efectos secundarios
-- Permite funciones anónimas y de orden superior
+hijo(X, Y) :-
+    hombre(X),
+    progenitor(Y, X).
 
-4. Qué es el pattern matching?, indique con un ejemplo sobre cualquier objeto
-El pattern matching permite comparar un valor con diferentes patrones y ejecutar la accion según la coincidencia.
-val animal="Perro"
+hermanos(X, Y) :-
+    progenitor(P, X),
+    progenitor(P, Y),
+    X \= Y.
 
-animal match {
-	case "Perro"=>println("Es un perro")
-	case "Gato"=>println("Es un gato")
-	case _=>println("Animal desconocido")
-}
- 
-5. Qué es un Closure en SCALA, indique con un ejemplo
-Un closure es una función que utiliza una variable fuera de ella.
-val incremento=5
-val sumar=(numero:Int)=>numero+incremento
-println(sumar(10))
+hermano(X, Y) :-
+    hombre(X),
+    hermanos(X, Y).
 
-Traits: definen comportamientos reutilizables que pueden ser implementados por distintas clases.
-Object: define un objeto único o singleton; solo existe una instancia y no se utiliza new.
-Option: representa un valor que puede existir o no, evitando utilizar null.
-Some: indica que un Option contiene un valor.
-Lazy: hace que una variable se inicialice únicamente cuando se utiliza por primera vez.
-Funciones de orden superior: reciben funciones como parámetros o devuelven funciones como resultado.
-Currying: transforma una función con varios parámetros en una secuencia de funciones con un parámetro.
-Serialización: convierte un objeto en datos para poder guardarlo o transmitirlo.
+abuelo(X, Y) :-
+    hombre(X),
+    progenitor(X, P),
+    progenitor(P, Y).
+
+nieto(X, Y) :-
+    hombre(X),
+    progenitor(Y, P),
+    progenitor(P, X).
+
+tio(X, Y) :-
+    hombre(X),
+    progenitor(P, Y),
+    hermanos(X, P).
+
+sobrino(X, Y) :-
+    hombre(X),
+    progenitor(P, X),
+    hermanos(P, Y).
+
+primo(X, Y) :-
+    hombre(X),
+    progenitor(PX, X),
+    progenitor(PY, Y),
+    hermanos(PX, PY),
+    X \= Y.
+
+conyuge(X, Y) :-
+    matrimonio(X, Y).
+
+conyuge(X, Y) :-
+    matrimonio(Y, X).
+
+suegro(X, Y) :-
+    hombre(X),
+    conyuge(Y, C),
+    progenitor(X, C).
+
+yerno(X, Y) :-
+    hombre(X),
+    conyuge(X, C),
+    progenitor(Y, C).
+
+cunado(X, Y) :-
+    hombre(X),
+    conyuge(Y, C),
+    hermanos(X, C).
+
+cunado(X, Y) :-
+    hombre(X),
+    conyuge(X, C),
+    hermanos(C, Y).
+
+antepasado(X, Y) :-
+    progenitor(X, Y).
+
+antepasado(X, Y) :-
+    progenitor(X, Z),
+    antepasado(Z, Y).
+
+descendiente(X, Y) :-
+antepasado(Y, X).
+
+materia_puerta(X):-
+	prerrequisito(X,Y),
+	prerrequisito(X,Z),
+	Y\=Z.
+		
       .</textarea>
 
     <div class="botones">
